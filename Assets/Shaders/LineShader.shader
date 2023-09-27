@@ -66,8 +66,11 @@ Shader "Unlit/LineShader"
                 _Left = tex2D(_MainTex, i.uv - fixed2(0, _MainTex_ST.x));
                 _Down = tex2D(_MainTex, i.uv - fixed2(0, _MainTex_ST.y));
                 _Right = tex2D(_MainTex, i.uv + fixed2(0, _MainTex_ST.x));
+                float2 scalar = 1;
 
-                float4 c_lum = LUM(_ObjectColor.rgb);
+                
+                float4 c_lum = LUM(_Center.rgb);
+                
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, c_lum.rbg);
                 return c_lum;
