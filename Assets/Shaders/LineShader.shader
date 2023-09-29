@@ -69,7 +69,7 @@ Shader "Unlit/LineShader"
                 float2 scalar = 1;
 
                 
-                float4 c_lum = LUM(_Center.rgb);
+                float4 c_lum = LUM(_ObjectColor.rgb);
                 
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, c_lum.rbg);
