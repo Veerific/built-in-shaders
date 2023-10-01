@@ -62,6 +62,7 @@ Shader "Unlit/LineShader"
 
             fixed4 frag (v2f i) : SV_Target
             {
+
                 //Gets all the pixels needed for the image kernel
                 _Center = tex2D(_MainTex, i.uv).rgb;
                 _Up = tex2D(_MainTex,i.uv + fixed2(0, _MainTex_ST.y));
@@ -78,11 +79,13 @@ Shader "Unlit/LineShader"
                 float4 r_lum = LUM(_Right);
 
                 float pixel_lum = saturate(u_lum + l_lum + d_lum + r_lum - (4*c_lum));
-                //pixel_lum = step(_LineThreshold, pixel_lum );
+                pixel_lum = smoothstep(_LineThreshold, pixel_lum,1 );
+
+                float tex = tex2D(_MainTex, i.uv);
 
             
             
-                return float4(pixel_lum, pixel_lum, pixel_lum, 1);
+                return float4(pixel_lum, pixel_lum, pixel_lum, 1) + tex;
             }
             ENDCG
         }
