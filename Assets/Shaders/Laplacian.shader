@@ -1,10 +1,12 @@
-Shader "Unlit/LineShader"
+Shader "Unlit/Laplacian"
 {
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
         _ObjectColor("ObjectColor", Color) = (1,1,1,1)
-        _LineThreshold("LineThreshold", Range(0,1)) = 0.5
+        _LineThreshold("LineThreshold", Range(.0001,1)) = 0.5
+        _LineThickness("Line Thickness",Range(0,5)) = 1
+        
     }
     SubShader
     {
@@ -20,7 +22,7 @@ Shader "Unlit/LineShader"
 
             #include "UnityCG.cginc"
             
-            //Formula for calculating the relative luminance of pixels (Basically how bright the color is for the human eye)
+            //Formula for calculating the relative luminance of pixels
             //Needed for grayscaling
             #define LUM(c) ((c).r*.299 + (c).g*.587 + (c).b*.114)
 
@@ -42,6 +44,7 @@ Shader "Unlit/LineShader"
             float4 _MainTex_ST;
             float4 _ObjectColor;
             float _LineThreshold;
+            float _LineThickness;
             
             float4 _MainTex_TexelSize; // float4(1 / width, 1 / height, width, height)
             //Variables needed for Laplacian algorithm
@@ -62,15 +65,14 @@ Shader "Unlit/LineShader"
 
             fixed4 frag (v2f i) : SV_Target
             {
+                fixed4 tex = tex2D(_MainTex, i.uv);
 
                 //Gets all the pixels needed for the image kernel
                 _Center = tex2D(_MainTex, i.uv).rgb;
-                _Up = tex2D(_MainTex,i.uv + fixed2(0, _MainTex_ST.y));
-                _Left = tex2D(_MainTex, i.uv - fixed2(_MainTex_ST.x, 0));
-                _Down = tex2D(_MainTex, i.uv - fixed2(0, _MainTex_ST.y));
-                _Right = tex2D(_MainTex, i.uv + fixed2(_MainTex_ST.x, 0));
-                float2 scalar = 1;
-
+                _Up = tex2D(_MainTex,i.uv + fixed2(0, _MainTex_TexelSize.y));
+                _Left = tex2D(_MainTex, i.uv - fixed2(_MainTex_TexelSize.x, 0));
+                _Down = tex2D(_MainTex, i.uv - fixed2(0, _MainTex_TexelSize.y));
+                _Right = tex2D(_MainTex, i.uv + fixed2(_MainTex_TexelSize.x, 0));
                 
                 float4 c_lum = LUM(_Center);
                 float4 u_lum = LUM(_Up);
@@ -78,13 +80,9 @@ Shader "Unlit/LineShader"
                 float4 d_lum = LUM(_Down);
                 float4 r_lum = LUM(_Right);
 
-                float pixel_lum = saturate(u_lum + l_lum + d_lum + r_lum - (4*c_lum));
-                pixel_lum = smoothstep(_LineThreshold, pixel_lum,1 );
-
-                float tex = tex2D(_MainTex, i.uv);
-
-            
-            
+                float pixel_lum = -(saturate(u_lum + l_lum + d_lum + r_lum - (4*c_lum))) * _LineThickness;
+                //pixel_lum = step(_LineThreshold, pixel_lum);
+       
                 return float4(pixel_lum, pixel_lum, pixel_lum, 1) + tex;
             }
             ENDCG
