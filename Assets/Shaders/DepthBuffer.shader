@@ -9,6 +9,8 @@ Shader "Unlit/DepthBuffer"
     {
         Tags { "RenderType"="Opaque" }
         LOD 100
+   
+        
 
         Pass
         {
@@ -32,10 +34,11 @@ Shader "Unlit/DepthBuffer"
                 float4 screenSpace : TEXCOORD1;
             };
 
-            sampler2D _MainTex;
+            sampler2D _MainTex; 
             sampler2D _CameraDepthTexture;
             float4 _MainTex_ST;
             float4 _MainTex_TexelSize;
+            float _LineThreshold;
 
             float3 _Center;
             float3 _Up;
@@ -43,7 +46,6 @@ Shader "Unlit/DepthBuffer"
             float3 _Down;
             float3 _Right;
             
-
             v2f vert (appdata v)
             {
                 v2f o;
@@ -57,29 +59,25 @@ Shader "Unlit/DepthBuffer"
             {
                 fixed4 maintex = tex2D(_MainTex, i.uv);
 
-                fixed2 screenUV = i.screenSpace.xy / i.screenSpace.w;
+                //This is only for objects inside the scene
+                //float2 screenUV = i.screenSpace.xy / i.screenSpace.w;
 
                 //Sampling the camera depth texture
-                float4 depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, screenUV.xy);
-
+                //Linear01Depth decodes the texture 
+                //LinearEyeDepth also decodes textures, but works differently in calculation, since it returns a flat color
+                float depth = Linear01Depth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv));
 
                 //Gets all the pixels needed for the Laplacian image kernel
-                _Center = tex2D(_MainTex, i.uv).rgb;
-                _Up = tex2D(_MainTex,i.uv + fixed2(0, _MainTex_TexelSize.y));
-                _Left = tex2D(_MainTex, i.uv - fixed2(_MainTex_TexelSize.x, 0));
-                _Down = tex2D(_MainTex, i.uv - fixed2(0, _MainTex_TexelSize.y));
-                _Right = tex2D(_MainTex, i.uv + fixed2(_MainTex_TexelSize.x, 0));
-                
-                float4 c_lum = LUM(_Center);
-                float4 u_lum = LUM(_Up);
-                float4 l_lum = LUM(_Left);
-                float4 d_lum = LUM(_Down);
-                float4 r_lum = LUM(_Right);
+                _Center = tex2D(_CameraDepthTexture, i.uv);
+                _Up = tex2D(_CameraDepthTexture,i.uv + fixed2(0, _MainTex_TexelSize.y));
+                _Left = tex2D(_CameraDepthTexture, i.uv - fixed2(_MainTex_TexelSize.x, 0));
+                _Down = tex2D(_CameraDepthTexture, i.uv - fixed2(0, _MainTex_TexelSize.y));
+                _Right = tex2D(_CameraDepthTexture, i.uv + fixed2(_MainTex_TexelSize.x, 0));
 
-                float pixel_lum = -(saturate(u_lum + l_lum + d_lum + r_lum - (4*c_lum))) * 2; 
-                //pixel_lum = step(_LineThreshold, pixel_lum);
-                return fixed4(depth.x, depth.y, depth.z, 1);
-            }
+                float pixel_lum = saturate(_Up + _Left + _Down + _Right - (4 * _Center)); 
+                fixed4 outline = fixed4(pixel_lum, pixel_lum, pixel_lum, 1);
+                return -outline * 2 + maintex;
+            } 
             ENDCG
         }
     }

@@ -8,10 +8,11 @@ public class AttachToCamera : MonoBehaviour
 
     int test = -1;
     public Material material;
-    //public void Start()
-    //{
-    //    GetComponent<Camera>().depthTextureMode = DepthTextureMode.Depth;
-    //}
+    public void Start()
+    {
+        GetComponent<Camera>().depthTextureMode = DepthTextureMode.Depth;
+        //GetComponent<Camera>().depth = 1;
+    }
 
     //This adds the shader to the camera
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
@@ -19,10 +20,5 @@ public class AttachToCamera : MonoBehaviour
         Graphics.Blit(source, destination, material);
     }
 
-    public void Start()
-    {
-        test = Mathf.Clamp(test, 0, 1);
-        print(test);
-    }
 
 }
