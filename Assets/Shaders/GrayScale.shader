@@ -4,7 +4,7 @@ Shader "Unlit/GrayScale"
     {
         _MainTex ("Texture", 2D) = "white" {}
         _ObjectColor("ObjectColor", Color) = (1,1,1,1)
-        _LineThreshold("LineThreshold", Range(0,1)) = 0.5
+        _LineColor("Line Color", Color) = (0,0,0,1)
 
         
     }
@@ -44,6 +44,7 @@ Shader "Unlit/GrayScale"
             float4 _MainTex_ST;
             float4 _ObjectColor;
             float _LineThreshold;
+            fixed4 _LineColor;
 
             
             float4 _MainTex_TexelSize; // float4(1 / width, 1 / height, width, height)
@@ -80,9 +81,10 @@ Shader "Unlit/GrayScale"
                 float4 d_lum = LUM(_Down);
                 float4 r_lum = LUM(_Right);
 
-                float pixel_lum = -(saturate(u_lum + l_lum + d_lum + r_lum - (4*c_lum))) * 2; 
-                //pixel_lum = step(_LineThreshold, pixel_lum);
-                return float4(pixel_lum, pixel_lum, pixel_lum, 1) + tex;
+                float pixel_lum = saturate(u_lum + l_lum + d_lum + r_lum - (4*c_lum)); 
+                
+                fixed4 outline = fixed4(pixel_lum, pixel_lum, pixel_lum, 1);
+                return -outline + tex;
             }
             ENDCG
         }

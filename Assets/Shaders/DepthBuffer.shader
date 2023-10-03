@@ -44,7 +44,6 @@ Shader "Unlit/DepthBuffer"
             float3 _Right;
             
 
-
             v2f vert (appdata v)
             {
                 v2f o;
@@ -60,8 +59,8 @@ Shader "Unlit/DepthBuffer"
 
                 fixed2 screenUV = i.screenSpace.xy / i.screenSpace.w;
 
-                //Depth Buffer
-                float depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, screenUV.xy);
+                //Sampling the camera depth texture
+                float4 depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, screenUV.xy);
 
 
                 //Gets all the pixels needed for the Laplacian image kernel
@@ -79,7 +78,7 @@ Shader "Unlit/DepthBuffer"
 
                 float pixel_lum = -(saturate(u_lum + l_lum + d_lum + r_lum - (4*c_lum))) * 2; 
                 //pixel_lum = step(_LineThreshold, pixel_lum);
-                return fixed4(depth, depth, depth, 1);
+                return fixed4(depth.x, depth.y, depth.z, 1);
             }
             ENDCG
         }
