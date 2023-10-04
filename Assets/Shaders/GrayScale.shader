@@ -82,7 +82,7 @@ Shader "Unlit/GrayScale"
                 float4 r_lum = LUM(_Right);
 
                 float pixel_lum = saturate(u_lum + l_lum + d_lum + r_lum - (4*c_lum)); 
-                pixel_lum = step(_LineThreshold, pixel_lum);
+
                 
                 fixed4 outline = fixed4(pixel_lum, pixel_lum, pixel_lum, 1);
                 return -outline*2 + tex;

@@ -40,11 +40,11 @@ Shader "Unlit/DepthBuffer"
             float4 _MainTex_TexelSize;
             float _LineThreshold;
 
-            float3 _Center;
-            float3 _Up;
-            float3 _Left;
-            float3 _Down;
-            float3 _Right;
+            fixed depthCenter;
+            fixed depthUp;
+            fixed depthDown;
+            fixed depthLeft;
+            fixed depthRight;
             
             v2f vert (appdata v)
             {
@@ -64,19 +64,15 @@ Shader "Unlit/DepthBuffer"
 
                 //Sampling the camera depth texture
                 //Linear01Depth decodes the texture 
-                //LinearEyeDepth also decodes textures, but works differently in calculation, since it returns a flat color
-                float depth = Linear01Depth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv));
+                depthCenter = Linear01Depth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv));
+                depthUp = Linear01Depth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv + fixed2(0,_MainTex_TexelSize.y)));
+                depthLeft = Linear01Depth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv - fixed2(_MainTex_TexelSize.x, 0)));
+                depthDown = Linear01Depth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv - fixed2(0,_MainTex_TexelSize.y)));
+                depthRight = Linear01Depth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv + fixed2(_MainTex_TexelSize.x, 0)));
 
-                //Gets all the pixels needed for the Laplacian image kernel
-                _Center = tex2D(_CameraDepthTexture, i.uv);
-                _Up = tex2D(_CameraDepthTexture,i.uv + fixed2(0, _MainTex_TexelSize.y));
-                _Left = tex2D(_CameraDepthTexture, i.uv - fixed2(_MainTex_TexelSize.x, 0));
-                _Down = tex2D(_CameraDepthTexture, i.uv - fixed2(0, _MainTex_TexelSize.y));
-                _Right = tex2D(_CameraDepthTexture, i.uv + fixed2(_MainTex_TexelSize.x, 0));
-
-                float pixel_lum = saturate(_Up + _Left + _Down + _Right - (4 * _Center)); 
-                fixed4 outline = fixed4(pixel_lum, pixel_lum, pixel_lum, 1);
-                return -outline * 2 + maintex;
+                float pixel_lum = saturate(depthUp + depthLeft + depthDown + depthRight - (4 * depthCenter)); 
+                fixed4 outline = fixed4(-pixel_lum, -pixel_lum, -pixel_lum, 1);
+                return outline + maintex;
             } 
             ENDCG
         }
