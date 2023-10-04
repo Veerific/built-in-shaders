@@ -19,6 +19,7 @@ Shader "Unlit/DepthBuffer"
             #pragma fragment frag
       
             #include "UnityCG.cginc"
+
             #define LUM(c) ((c).r*.299 + (c).g*.587 + (c).b*.114)
 
             struct appdata
