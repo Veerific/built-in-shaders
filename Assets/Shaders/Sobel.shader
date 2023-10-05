@@ -19,6 +19,7 @@ Shader "Unlit/Sobel"
 
             #include "UnityCG.cginc"
 
+
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -35,6 +36,7 @@ Shader "Unlit/Sobel"
             sampler2D _MainTex;
             float4 _MainTex_ST;
 
+
             v2f vert (appdata v)
             {
                 v2f o;
@@ -46,6 +48,7 @@ Shader "Unlit/Sobel"
 
             fixed4 frag (v2f i) : SV_Target
             {
+                
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
                 // apply fog

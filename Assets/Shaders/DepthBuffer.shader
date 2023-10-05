@@ -73,7 +73,7 @@ Shader "Unlit/DepthBuffer"
 
                 float pixel_lum = saturate(depthUp + depthLeft + depthDown + depthRight - (4 * depthCenter)); 
                 fixed4 outline = fixed4(-pixel_lum, -pixel_lum, -pixel_lum, 1);
-                return outline + maintex;
+                return -outline;
             } 
             ENDCG
         }
