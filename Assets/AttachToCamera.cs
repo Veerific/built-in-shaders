@@ -10,7 +10,7 @@ public class AttachToCamera : MonoBehaviour
     public Material material;
     public void Start()
     {
-        GetComponent<Camera>().depthTextureMode = DepthTextureMode.Depth;
+        GetComponent<Camera>().depthTextureMode = DepthTextureMode.DepthNormals;
         //GetComponent<Camera>().depth = 1;
     }
 

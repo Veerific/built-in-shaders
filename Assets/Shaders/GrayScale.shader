@@ -75,11 +75,11 @@ Shader "Unlit/GrayScale"
                 _Down = tex2D(_MainTex, i.uv - fixed2(0, _MainTex_TexelSize.y));
                 _Right = tex2D(_MainTex, i.uv + fixed2(_MainTex_TexelSize.x, 0));
                 
-                float4 c_lum = LUM(_Center);
-                float4 u_lum = LUM(_Up);
-                float4 l_lum = LUM(_Left);
-                float4 d_lum = LUM(_Down);
-                float4 r_lum = LUM(_Right);
+                float4 c_lum = Luminance(_Center);
+                float4 u_lum = Luminance(_Up);
+                float4 l_lum = Luminance(_Left);
+                float4 d_lum = Luminance(_Down);
+                float4 r_lum = Luminance(_Right);
 
                 float pixel_lum = saturate(u_lum + l_lum + d_lum + r_lum - (4*c_lum)); 
 
