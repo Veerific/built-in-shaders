@@ -36,12 +36,12 @@ Shader "Unlit/NormalBuffer"
             float4 _MainTex_ST;
             float4 _MainTex_TexelSize;
             sampler2D _CameraDepthNormalsTexture;
-            fixed nCenter;
-            fixed nUp;
-            fixed nDown;
-            fixed nLeft;
-            fixed nRight;
-            fixed normalDown;
+            fixed4 nCenter;
+            fixed4 nUp;
+            fixed4 nDown;
+            fixed4 nLeft;
+            fixed4 nRight;
+            fixed4 normalDown;
             float _Threshold;
 
             v2f vert (appdata v)
@@ -70,26 +70,26 @@ Shader "Unlit/NormalBuffer"
                 normalDown = tex2D(_CameraDepthNormalsTexture, i.uv - fixed2(0,_MainTex_TexelSize.y));
                 nRight = tex2D(_CameraDepthNormalsTexture, i.uv + fixed2(_MainTex_TexelSize.x, 0));
 
-                //DecodeDepthNormal(nCenter, depthValue, normalValue);
-                //float valueC = dot(normalValue.r, normalValue.g);
+                DecodeDepthNormal(nCenter, depthValue, normalValue);
+                float valueC = dot(normalValue.r, normalValue.g);
 
-                //DecodeDepthNormal(nUp, depthValue, normalValue);
-                //float valueU = dot(normalValue.r, normalValue.g);
+                DecodeDepthNormal(nUp, depthValue, normalValue);
+                float valueU = dot(normalValue.r, normalValue.g);
                 
-                //DecodeDepthNormal(nLeft, depthValue, normalValue);
-                //float valueL = dot(normalValue.r, normalValue.g);
+                DecodeDepthNormal(nLeft, depthValue, normalValue);
+                float valueL = dot(normalValue.r, normalValue.g);
                 
-                //DecodeDepthNormal(normalDown, depthValue, normalValue);
-                //float valueD = dot(normalValue.r, normalValue.g);
+                DecodeDepthNormal(normalDown, depthValue, normalValue);
+                float valueD = dot(normalValue.r, normalValue.g);
                 
-                //DecodeDepthNormal(nRight, depthValue, normalValue);
-                //float valueR = dot(normalValue.r, normalValue.g);
+                DecodeDepthNormal(nRight, depthValue, normalValue);
+                float valueR = dot(normalValue.r, normalValue.g);
 
-                //float outline = valueU + valueL + valueD + valueR - (4*valueC);
-                //outline = outline > _Threshold ? 1 : 0;
+                float outline = valueU + valueL + valueD + valueR - 4*valueC;
+                outline = outline > _Threshold ? 1 : 0;
                 
 
-                return nCenter;
+                return outline;
             }
             ENDCG
         }
