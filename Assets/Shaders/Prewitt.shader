@@ -1,4 +1,4 @@
-Shader "Unlit/Sobel"
+Shader "Unlit/Prewitt"
 {
     Properties
     {
@@ -67,7 +67,7 @@ Shader "Unlit/Sobel"
                     DecodeDepthNormal(value[i], dValue[i], nValue);
                 }
 
-                return dValue[0] + (2*dValue[1]) + dValue[2] + -dValue[3] + (2*-dValue[4]) + -dValue[5];            
+                return dValue[0] + dValue[1] + dValue[2] + -dValue[3] + -dValue[4] + -dValue[5];            
             }
 
             //vertical kernel for depth
@@ -96,7 +96,7 @@ Shader "Unlit/Sobel"
                     DecodeDepthNormal(value[i], dValue[i], nValue);
                 }
 
-                return dValue[0] + (2*dValue[1]) + dValue[2] + -dValue[3] + (2*-dValue[4]) + -dValue[5];
+                return dValue[0] + dValue[1] + dValue[2] + -dValue[3] + -dValue[4] + -dValue[5];
             }
 
             //horinzontal kernel for normal
@@ -133,7 +133,7 @@ Shader "Unlit/Sobel"
                     DecodeDepthNormal(value[i], depthValue, nValue[i]);
                     nDot[i] = dot(nValue[i].r, nValue[i].g);
                 };
-                return nDot[0] + (2*nDot[1]) + nDot[2] + -nDot[3] + (2*-nDot[4]) + -nDot[5];            
+                return nDot[0] + nDot[1] + nDot[2] + -nDot[3] + -nDot[4] + -nDot[5];            
             }
 
             //vertical kernel for normal
@@ -168,7 +168,7 @@ Shader "Unlit/Sobel"
                     DecodeDepthNormal(value[i], depthValue, nValue[i]);
                     nDot[i] = dot(nValue[i].r, nValue[i].g);
                 }
-                return nDot[0] + (2*nDot[1]) + nDot[2] + -nDot[3] + (2*-nDot[4]) + -nDot[5];   
+                return nDot[0] + nDot[1] + nDot[2] + -nDot[3] + -nDot[4] + -nDot[5];   
             }
 
 

@@ -101,7 +101,7 @@ Shader "Unlit/DepthNormalBuffer"
                 oNormal = oNormal > _NThreshold ? 1 : 0;
                 float outline = max(oDepth, oNormal);
                
-               if(outline == 1){
+                 if(outline == 1){
                 mainTex = _LineColor;
                 }
 

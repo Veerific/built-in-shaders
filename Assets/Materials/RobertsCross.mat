@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: NormalBuffer
-  m_Shader: {fileID: 4800000, guid: 83fa9dd8d6d16ec41901bb5a56a00068, type: 3}
+  m_Name: RobertsCross
+  m_Shader: {fileID: 4800000, guid: da4acbb9fa515a14db4b7fc7ef8090d1, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -63,6 +63,7 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
+    - _DThreshold: 0.045
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _GlossMapScale: 1
@@ -70,12 +71,12 @@ Material:
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0
+    - _NThreshold: 0.042
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Threshold: 0.045
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
