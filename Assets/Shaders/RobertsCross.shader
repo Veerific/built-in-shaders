@@ -146,7 +146,7 @@ Shader "Unlit/RobertsCross"
 
                 float outline = max(oDepth, oNormal);
                
-                return -outline + camTex;
+                return oNormal + camTex;
             }
             ENDCG
         }
