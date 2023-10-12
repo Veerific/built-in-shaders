@@ -199,7 +199,7 @@ Shader "Unlit/Sobel"
 
                 float outline = max(oDepth, oNormal);
                
-                return outline + camTex;
+                return -outline + camTex;
             }
             ENDCG
         }
