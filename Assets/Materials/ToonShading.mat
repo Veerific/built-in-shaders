@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ToonShading
-  m_Shader: {fileID: 4800000, guid: bf4de199b8a4d4a4da0af788c6454407, type: 3}
+  m_Shader: {fileID: 4800000, guid: 934163a4af79e054a88b92776ff749a6, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -68,14 +68,14 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _LightSize: 0.487
+    - _LightSize: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _ShadeValue1: 0
-    - _ShadeValue2: 0.26
-    - _ShadeValue3: 0.383
+    - _ShadeValue2: 0.339
+    - _ShadeValue3: 0.636
     - _ShadowIntensity: 0.549
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -85,8 +85,8 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LightColor: {r: 0, g: 0.81639814, b: 1, a: 1}
+    - _LightColor: {r: 0.91132075, g: 0.9836552, b: 1, a: 1}
     - _LightIntensity: {r: 1, g: 1, b: 1, a: 1}
-    - _ObjectColor: {r: 0, g: 0.6226415, b: 0.6037932, a: 1}
+    - _ObjectColor: {r: 0, g: 1, b: 0.96855354, a: 1}
     - _ShadowColor: {r: 1, g: 0.5254902, b: 0, a: 1}
   m_BuildTextureStacks: []
