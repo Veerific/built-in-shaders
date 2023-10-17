@@ -5,7 +5,6 @@ Shader "Unlit/FlatShading"
         _MainTex ("Texture", 2D) = "white" {}
         _ObjectColor("Object Color", Color) = (1,1,1,1)
         _ShadowColor("Shadow Color", Color) = (1,1,1,1)
-        _LightColor("Light Color", Color) = (1,1,1,1)
         _ShadowIntensity("Shadow Level", Range(0,1)) = 0.5
         _LightSize("Light Size", Range(0,1)) = 0.5
 
@@ -30,6 +29,8 @@ Shader "Unlit/FlatShading"
 
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
+    
+            #pragma multi_compile_fwdbase nolightmap nodirlightmap nodynlightmap 
             #include "AutoLight.cginc"
 
             struct appdata
@@ -44,16 +45,15 @@ Shader "Unlit/FlatShading"
             {
                 float2 uv : TEXCOORD0;
                 SHADOW_COORDS(2)
-                float4 vertex : SV_POSITION;
+                float4 pos : SV_POSITION;
                 float3 worldNormal : NORMAL;
                 float3 viewDir : TEXCOORD1;
-                fixed3 ambient : COLOR1;
+                half3 normal : TEXCOORD3;
             };
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
             float4 _ObjectColor;
-            float4 _LightColor;
             float4 _ShadowColor;
             float _ShadowIntensity;
             float _LightSize;
@@ -66,11 +66,11 @@ Shader "Unlit/FlatShading"
             v2f vert (appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.worldNormal = UnityObjectToWorldNormal(v.normal);
                 o.viewDir = WorldSpaceViewDir(v.vertex);
-                o.ambient = ShadeSH9(half4(o.worldNormal,1));
+                o.normal = v.normal;
                 TRANSFER_SHADOW(o);
       
                 return o;
@@ -84,9 +84,13 @@ Shader "Unlit/FlatShading"
                 
                 float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
                 float shadow = SHADOW_ATTENUATION(i);
+                half3 normal = i.normal;
+
+               
 
                 //calculates how shadow is perceived
-                float lightDot = dot(i.worldNormal, lightDir);
+                //shadow is added to the dotted light values 
+                float lightDot = dot(i.worldNormal, lightDir) * shadow;
                 float shade;
                 if(lightDot >_ShadeValue3){
                     shade = 1;
@@ -104,17 +108,11 @@ Shader "Unlit/FlatShading"
                 float rimLight = viewDot * lightDot;
                 float rim = smoothstep(_LightSize - 0.01, _LightSize + 0.01, rimLight);
 
-                fixed3 objectShadow = i.ambient + (shade * shadow);
-
-                fixed3 obj = _ObjectColor * (objectShadow + rim);
-
-   
-                return fixed4(obj.r, obj.g, obj.b, 1);
+                return col * (shade * _LightColor0 + rim);
             }
             ENDCG
         }
         //ShadowCasting Support
         UsePass "Legacy Shaders/VertexLit/SHADOWCASTER"
-
     }
 }

@@ -50,6 +50,13 @@ Shader "Unlit/DepthNormalBuffer"
             float _DThreshold;
             float _NThreshold;
 
+            //Just for grayscale
+            float3 _Center;
+            float3 _Up;
+            float3 _Left;
+            float3 _Down;
+            float3 _Right;
+
             v2f vert (appdata v)
             {
                 v2f o;
@@ -78,10 +85,10 @@ Shader "Unlit/DepthNormalBuffer"
 
                 //All the Data needed for the kernel
                 _pCenter = tex2D(_CameraDepthNormalsTexture, i.uv);
-                _pTop = tex2D(_CameraDepthNormalsTexture, i.uv + fixed2(0,_MainTex_TexelSize.y * _LineThickness));
-                _pLeft = tex2D(_CameraDepthNormalsTexture, i.uv - fixed2(_MainTex_TexelSize.x * _LineThickness, 0));
-                _pBottom = tex2D(_CameraDepthNormalsTexture, i.uv - fixed2(0,_MainTex_TexelSize.y * _LineThickness));
-                _pRight = tex2D(_CameraDepthNormalsTexture, i.uv + fixed2(_MainTex_TexelSize.x * _LineThickness, 0));
+                _pTop = tex2D(_CameraDepthNormalsTexture, i.uv + (fixed2(0,_MainTex_TexelSize.y)  * _LineThickness));
+                _pLeft = tex2D(_CameraDepthNormalsTexture, i.uv - (fixed2(_MainTex_TexelSize.x, 0) * _LineThickness));
+                _pBottom = tex2D(_CameraDepthNormalsTexture, i.uv - (fixed2(0,_MainTex_TexelSize.y) * _LineThickness));
+                _pRight = tex2D(_CameraDepthNormalsTexture, i.uv + (fixed2(_MainTex_TexelSize.x, 0) * _LineThickness));
 
                 DecodeDepthNormal(_pCenter, depthValue0, normalValue0);
                 DecodeDepthNormal(_pTop, depthValue1, normalValue1);
