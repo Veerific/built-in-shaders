@@ -11,12 +11,12 @@ Shader "Unlit/FlatShading"
         _ShadeValue1("Shade Value 1", Range(0,1)) = 0.15
         _ShadeValue2("Shade Value 2", Range(0,1)) = 0.35
         _ShadeValue3("Shade Value 3", Range(0,1)) = 0.55
+
+        _Glossiness("Glossiness", Float) = 32
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" 
-        
-        }
+        Tags { "RenderType"="Opaque"}
         LOD 100
 
         Pass
@@ -61,7 +61,9 @@ Shader "Unlit/FlatShading"
             float _ShadeValue1;
             float _ShadeValue2;
             float _ShadeValue3;
-           
+
+            float _Glossiness;
+                      
 
             v2f vert (appdata v)
             {
@@ -108,7 +110,19 @@ Shader "Unlit/FlatShading"
                 float rimLight = viewDot * lightDot;
                 float rim = smoothstep(_LightSize - 0.01, _LightSize + 0.01, rimLight);
 
-                return col * (shade * _LightColor0 + rim);
+                //col.rgb = i.worldNormal * 0.5 * 0.5;
+
+              
+
+                float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
+                float NdotH = dot(i.worldNormal, halfVector);
+
+                float specularIntensity = pow(NdotH * lightDot, _Glossiness * _Glossiness);
+                float specularIntensitySmooth = smoothstep(0.005, 0.01, specularIntensity);
+                float4 specular = specularIntensitySmooth * _LightColor0;
+
+
+                return col * (shade *_LightColor0 + rim);
             }
             ENDCG
         }
