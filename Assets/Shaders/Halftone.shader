@@ -9,7 +9,7 @@ Shader "Unlit/Halftone"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "Queue" = "Geometry" }
+        Tags { "RenderType"="Opaque" "LightMode" = "ForwardBase" }
         LOD 100
 
         Pass
@@ -52,12 +52,16 @@ Shader "Unlit/Halftone"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed4 mask = tex2D(_HalfToneTex, i.uv);
+                //fixed4 mask = tex2D(_HalfToneTex, i.uv);
                 float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
 
                 float lightDot = dot(i.worldNormal, lightDir);
-                float lightvalues = lightDot > 0 ? 1 : _ShadeValue;
-                float tone = max(lightvalues, mask.r);
+                lightDot = smoothstep( - _ShadeValue, _ShadeValue, lightDot );
+                //float lightvalues = lightDot > 0 ? 1 : _ShadeValue;
+
+                float val = max(tex2D(_HalfToneTex, i.uv), 0.001);
+
+                float tone = step(val, lightDot);
         
 
                 // sample the texture

@@ -126,6 +126,35 @@ Shader "Unlit/FlatShading"
             }
             ENDCG
         }
+        Pass{
+
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+
+        
+            #include "UnityCG.cginc"
+            #include "Lighting.cginc"
+
+            struct appdata
+            {
+                float4 vertex : POSITION; 
+                float2 uv : TEXCOORD0;
+                half3 normal : NORMAL;
+            };
+
+            struct v2f
+            {
+                float2 uv : TEXCOORD0;
+                float4 pos : SV_POSITION;
+                float3 worldNormal : NORMAL;
+                float3 viewDir : TEXCOORD1;
+                half3 normal : NORMAL;
+            };
+
+
+
+        }
         //ShadowCasting Support
         UsePass "Legacy Shaders/VertexLit/SHADOWCASTER"
     }
