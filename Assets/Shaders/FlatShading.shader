@@ -110,7 +110,6 @@ Shader "Unlit/FlatShading"
                 float4 pos : SV_POSITION;
                 float3 worldNormal : NORMAL;
                 float3 viewDir : TEXCOORD1;
-                half3 normal : TEXCOORD3;
             };
 
             sampler2D _MainTex;
@@ -134,7 +133,7 @@ Shader "Unlit/FlatShading"
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.worldNormal = UnityObjectToWorldNormal(v.normal);
                 o.viewDir = WorldSpaceViewDir(v.vertex);
-                o.normal = v.normal;
+  
                 TRANSFER_SHADOW(o);
       
                 return o;
@@ -148,7 +147,7 @@ Shader "Unlit/FlatShading"
                 
                 float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
                 float shadow = SHADOW_ATTENUATION(i);
-                half3 normal = i.normal;
+             
 
                
 
@@ -165,16 +164,12 @@ Shader "Unlit/FlatShading"
                 } else if (lightDot < _ShadeValue1){
                     shade = _ShadowIntensity ;
                 }
-                //fixed4 shadow = shade * _ShadowColor;
 
                 //calculates the rimlighting
                 float viewDot = 1 - dot(normalize(i.viewDir), i.worldNormal);
                 float rimLight = viewDot * lightDot;
                 float rim = smoothstep(_LightSize - 0.01, _LightSize + 0.01, rimLight);
 
-                //col.rgb = i.worldNormal * 0.5 * 0.5;
-
-              
 
                 float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
                 float NdotH = dot(i.worldNormal, halfVector);
