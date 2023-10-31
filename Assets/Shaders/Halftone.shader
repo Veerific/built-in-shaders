@@ -134,17 +134,14 @@ Shader "Unlit/Halftone"
                 if(lightDot > _ShadowSize){
                     lightDot = 1;
                 }
-                
-                
+                lightDot = lightDot > _ShadeValue ? step(halftoneVal, lightDot)  : 0;
 
-                //Adjusts the color and intensity of the shadow
+                //Changes the Shadow Color
                 if(lightDot == 0) {
-             
+                    lightDot = _ShadeIntensity;
                     col = (_ObjectColor * _ShadeIntensity) + col;  
                 }
 
-
-                
                 return col * (lightDot * _LightColor0 + rim);
             }
             ENDCG
