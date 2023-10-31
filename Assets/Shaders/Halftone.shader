@@ -5,6 +5,7 @@ Shader "Unlit/Halftone"
         _MainTex ("Texture", 2D) = "white" {}
 
         _HalfToneTex("Halftone Shadow", 2D) = "white" {}
+        _HalfToneTex2("Halftone Shadow 2", 2D) = "white" {}
         _HalftoneRim("Halftone Rim", 2D) = "white" {}
         _ShadeValue("Shadow Strenght", Range(0,1)) = 0.1
         _ShadeIntensity("Shadow Intensity",Range(0,1)) = 0.1
@@ -50,6 +51,7 @@ Shader "Unlit/Halftone"
 
             sampler2D _MainTex;
             sampler2D _HalfToneTex;
+            sampler2D _HalfToneTex2;
             sampler2D _HalftoneRim;
             float4 _MainTex_ST;
             float _ShadeValue;
