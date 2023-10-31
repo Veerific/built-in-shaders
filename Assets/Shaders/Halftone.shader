@@ -88,6 +88,10 @@ Shader "Unlit/Halftone"
                 fixed4 halftoneTex = tex2D(_HalfToneTex, i.screenSpace);
                 float halftoneVal = halftoneTex.r;
 
+                fixed4 halftoneTex2 = tex2D(_HalfToneTex2, i.screenSpace);
+                float halftone2Val = halftoneTex2.r;
+                
+
                 //Light Calculation
                 float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
                 float shadow = SHADOW_ATTENUATION(i);
@@ -110,12 +114,32 @@ Shader "Unlit/Halftone"
                
 
                 //Draws the halftone shadows
-                if(lightDot > _ShadowSize) { lightDot = 1;}
-                lightDot = lightDot > _ShadeValue ? step(halftoneVal, lightDot)  : 0;
+                
+                //Below is an attempt at layered shading
+
+                //if(lightDot > _ShadowSize) { 
+                //    lightDot = 1;
+                //}
+                //float halftoneShadow1 = 1;
+                //float halftoneShadow2 = 2;
+                //if (lightDot < _ShadowSize){
+                //    halftoneShadow1 = step(halftoneVal, lightDot);
+                //    lightDot = lightDot + halftoneShadow1;
+                //}
+                //if(lightDot < _ShadowSize/2){
+                //    halftoneShadow2 = step(halftone2Val, lightDot);
+                //    lightDot = lightDot + halftoneShadow2;
+                //}
+
+                if(lightDot > _ShadowSize){
+                    lightDot = 1;
+                }
+                
+                
 
                 //Adjusts the color and intensity of the shadow
                 if(lightDot == 0) {
-                    lightDot = _ShadeIntensity;
+             
                     col = (_ObjectColor * _ShadeIntensity) + col;  
                 }
 
