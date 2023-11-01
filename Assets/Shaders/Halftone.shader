@@ -8,12 +8,14 @@ Shader "Unlit/Halftone"
         _Threshold("Halftone Threshold", Range(0, 1)) = 1
         _HalfToneTex2("Halftone Shadow 2", 2D) = "white" {}
         _HalftoneRim("Halftone Rim", 2D) = "white" {}
+        _LightThreshold("Light Halftone Threshold", Range(1,5)) = 1
         _ShadeValue("Shadow Strenght", Range(0,1)) = 0.1
         _ShadeIntensity("Shadow Intensity",Range(0,1)) = 0.1
         _ObjectColor("Color", Color) = (1,1,1,1)
         _ShadowSize("Halftone Threshold", Range(0.3,1)) = 1
         _LightSize("Light Size", Range(0,1)) = 0.5
         _Glossiness("Glossiness", Float) = 32
+        _LightSmoothing("Light Smoothing", Range(0,0.1)) = 0.1
     }
     SubShader
     {
@@ -55,6 +57,7 @@ Shader "Unlit/Halftone"
             float _Threshold;
             sampler2D _HalfToneTex2;
             sampler2D _HalftoneRim;
+            float _LightThreshold;
             float4 _MainTex_ST;
             float _ShadeValue;
             float _ShadeIntensity;
@@ -62,6 +65,7 @@ Shader "Unlit/Halftone"
             float _ShadowSize;
             float _LightSize;
             float _Glossiness;
+            float _LightSmoothing;
    
 
             v2f vert (appdata v)
@@ -107,8 +111,10 @@ Shader "Unlit/Halftone"
                 float3 viewDir = normalize(i.viewDir);
                 float viewDot = 1-dot(normalize(i.viewDir), i.worldNormal);
                 float rimLight = viewDot * lightDot;
-                float rim = smoothstep(_LightSize - 0.01, _LightSize + 0.01, rimLight);
-                rim = step(halftoneRimVal, rim);
+                float rim = smoothstep(_LightSize - _LightSmoothing, _LightSize + _LightSmoothing, rimLight);
+                rim = step(halftoneRimVal, rimLight / _LightThreshold);
+
+                float spotLight = pow(lightDot, _Glossiness * _Glossiness);
 
                 ////specular Lighting
                 //float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
@@ -150,7 +156,7 @@ Shader "Unlit/Halftone"
                     col = (_ObjectColor * _ShadeIntensity) + col;  
                 }
 
-                return col * (lightDot * _LightColor0 + rim);
+                return col * (lightDot * _LightColor0  + rim);
             }
             ENDCG
         }
