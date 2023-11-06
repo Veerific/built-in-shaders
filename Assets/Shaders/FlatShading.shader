@@ -179,7 +179,7 @@ Shader "Unlit/FlatShading"
                 float4 specular = specularIntensitySmooth * _LightColor0;
 
 
-                return col * (shade *_LightColor0 + rim);
+                return col * (shade *_LightColor0 + rim + specular);
             }
             ENDCG
         }
