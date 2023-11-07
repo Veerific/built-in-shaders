@@ -3,7 +3,6 @@ Shader "Unlit/FlatShading"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _ObjectColor("Object Color", Color) = (1,1,1,1)
         _ShadowColor("Shadow Color", Color) = (1,1,1,1)
         _ShadowIntensity("Shadow Level", Range(0,1)) = 0.5
         _LightSize("Light Size", Range(0,1)) = 0.5
@@ -47,7 +46,6 @@ Shader "Unlit/FlatShading"
             
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float4 _ObjectColor;
             float4 _ShadowColor;
             float _ShadowIntensity;
             float _LightSize;
@@ -114,7 +112,6 @@ Shader "Unlit/FlatShading"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float4 _ObjectColor;
             float4 _ShadowColor;
             float _ShadowIntensity;
             float _LightSize;
@@ -156,14 +153,18 @@ Shader "Unlit/FlatShading"
                 float lightDot = dot(i.worldNormal, lightDir) * shadow;
                 float shade;
                 if(lightDot >_ShadeValue3){
-                    shade = 1;
+                    shade = 1;          
                 } else if(lightDot > _ShadeValue2 && lightDot < _ShadeValue3){
                     shade = _ShadowIntensity + 0.2 ;
+                    col = (_ShadowColor * shade) + col;               
                 } else if( lightDot > _ShadeValue1 && lightDot < _ShadeValue2){
                     shade = _ShadowIntensity + 0.1 ;
+                    col = (_ShadowColor * shade) + col;
                 } else if (lightDot < _ShadeValue1){
                     shade = _ShadowIntensity ;
+                    col = (_ShadowColor * shade) + col;
                 }
+                
 
                 //calculates the rimlighting
                 float viewDot = 1 - dot(normalize(i.viewDir), i.worldNormal);

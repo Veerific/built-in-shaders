@@ -7,7 +7,8 @@ Shader "Unlit/Halftone"
         _HalfToneTex("Halftone Shadow", 2D) = "white" {}
         _Threshold("Halftone Threshold", Range(0, 1)) = 1
         _HalftoneRim("Halftone Rim", 2D) = "white" {}
-        _LightThreshold("Light Halftone Threshold", Range(1,5)) = 1
+        _LightThreshold("Light Halftone Threshold", Range(0,1)) = 1
+        _LightThreshold2("Flat RimLighting", Range(0.5, 1)) = 0.3
         _ShadeValue("Shadow Strenght", Range(0,1)) = 0.1
         _ShadeIntensity("Shadow Intensity",Range(0,1)) = 0.1
         _ObjectColor("Color", Color) = (1,1,1,1)
@@ -55,6 +56,7 @@ Shader "Unlit/Halftone"
             float _Threshold;
             sampler2D _HalftoneRim;
             float _LightThreshold;
+            float _LightThreshold2;
             float4 _MainTex_ST;
             float _ShadeValue;
             float _ShadeIntensity;
@@ -108,15 +110,22 @@ Shader "Unlit/Halftone"
                 if(rimLight < _LightIntensity) {
                     rimLight = 0;
                 }
+                
                 float rim = lerp(_LightIntensity, 1, rimLight / _LightIntensity); 
+                if(rimLight > _LightThreshold2) {
+                    rimLight = 1; 
+                }
                 rim = step(halftoneRimVal, rimLight / _LightThreshold);
                 
 
                 //specular Lighting
-                float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
-                float halfDot = dot(i.worldNormal, halfVector);
-                float specularIntensity = pow(halfDot * lightDot, _Glossiness * _Glossiness);
-                float specularLight =  step(halftoneRimVal, specularIntensity);
+                //float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
+                //float halfDot = dot(i.worldNormal, halfVector);
+                //float specularIntensity = pow(halfDot * lightDot, _Glossiness * _Glossiness);
+                //if(specularIntensity > _LightIntensity + _LightThreshold2){
+                //    specularIntensity = 1;
+                //}
+                //float specularLight =  step(halftoneRimVal, specularIntensity);
                 //float specularLight = smoothstep(0.005, 0.01, specularIntensity);
                
 
@@ -149,7 +158,7 @@ Shader "Unlit/Halftone"
                     col = (_ObjectColor * _ShadeIntensity) + col;  
                 }
 
-                return col * (lightDot * _LightColor0  + rim + specularLight);
+                return col * (lightDot * _LightColor0  + rim);
             }
             ENDCG
         }
