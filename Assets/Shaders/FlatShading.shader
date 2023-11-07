@@ -3,7 +3,7 @@ Shader "Unlit/FlatShading"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _ShadowColor("Shadow Color", Color) = (1,1,1,1)
+        _ShadowColor("Shadow Color", Color) = (0,0,0,0)
         _ShadowIntensity("Shadow Level", Range(0,1)) = 0.5
         _LightSize("Light Size", Range(0,1)) = 0.5
 
@@ -46,6 +46,7 @@ Shader "Unlit/FlatShading"
             
             sampler2D _MainTex;
             float4 _MainTex_ST;
+            float _ObjectColor;
             float4 _ShadowColor;
             float _ShadowIntensity;
             float _LightSize;

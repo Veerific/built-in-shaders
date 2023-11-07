@@ -66,17 +66,17 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _GlossMapScale: 1
-    - _Glossiness: 0.5
+    - _Glossiness: 7.81
     - _GlossyReflections: 1
-    - _LightSize: 1
+    - _LightSize: 0.523
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _ShadeValue1: 0
-    - _ShadeValue2: 0.339
-    - _ShadeValue3: 0.636
-    - _ShadowIntensity: 0.549
+    - _ShadeValue1: 0.105
+    - _ShadeValue2: 0.301
+    - _ShadeValue3: 0.472
+    - _ShadowIntensity: 0.448
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -88,5 +88,5 @@ Material:
     - _LightColor: {r: 0.91132075, g: 0.9836552, b: 1, a: 1}
     - _LightIntensity: {r: 1, g: 1, b: 1, a: 1}
     - _ObjectColor: {r: 0, g: 1, b: 0.96855354, a: 1}
-    - _ShadowColor: {r: 1, g: 0.5254902, b: 0, a: 1}
+    - _ShadowColor: {r: 0.50002456, g: 0.7830189, b: 0, a: 1}
   m_BuildTextureStacks: []

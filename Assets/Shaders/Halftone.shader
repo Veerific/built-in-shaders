@@ -5,16 +5,16 @@ Shader "Unlit/Halftone"
         _MainTex ("Texture", 2D) = "white" {}
 
         _HalfToneTex("Halftone Shadow", 2D) = "white" {}
-        _Threshold("Halftone Threshold", Range(0, 1)) = 1
-        _HalftoneRim("Halftone Rim", 2D) = "white" {}
+        _ShadowThreshold("Shadow Halftone Threshold", Range(0, 1)) = 1
+        _HalftoneLight("Halftone Light", 2D) = "white" {}
         _LightThreshold("Light Halftone Threshold", Range(0,1)) = 1
-        _LightThreshold2("Flat RimLighting", Range(0.5, 1)) = 0.3
-        _ShadeValue("Shadow Strenght", Range(0,1)) = 0.1
-        _ShadeIntensity("Shadow Intensity",Range(0,1)) = 0.1
-        _ObjectColor("Color", Color) = (1,1,1,1)
-        _LightIntensity("Light Intensity", Range(0,1)) = 0.5
-        _Glossiness("Glossiness", Float) = 32
-        _LightSmoothing("Light Smoothing", Range(0,0.1)) = 0.1
+        _LightIntensity("Light Size", Range(0,1)) = 0.5
+        _LightThreshold2("Rim Light Size", Range(0.5, 1)) = 0.3
+        _ShadeValue("Solid Shadow", Range(0,1)) = 0.1
+        _ShadeIntensity("Shadow Opacity",Range(0,1)) = 0.1
+        _ObjectColor("Shadow Color", Color) = (1,1,1,1)
+        //_Glossiness("Glossiness", Float) = 32
+        //_LightSmoothing("Light Smoothing", Range(0,0.1)) = 0.1
     }
     SubShader
     {
@@ -53,8 +53,8 @@ Shader "Unlit/Halftone"
 
             sampler2D _MainTex;
             sampler2D _HalfToneTex;
-            float _Threshold;
-            sampler2D _HalftoneRim;
+            float _ShadowThreshold;
+            sampler2D _HalftoneLight;
             float _LightThreshold;
             float _LightThreshold2;
             float4 _MainTex_ST;
@@ -94,7 +94,7 @@ Shader "Unlit/Halftone"
                 fixed4 halftoneTex = tex2D(_HalfToneTex, screenUV * aspect);
                 float halftoneVal = halftoneTex.r;
 
-                fixed2 halftoneRim = tex2D(_HalftoneRim, screenUV * aspect);
+                fixed2 halftoneRim = tex2D(_HalftoneLight, screenUV * aspect);
                 float halftoneRimVal = halftoneRim.r;
 
                 //Light Calculation
@@ -148,8 +148,8 @@ Shader "Unlit/Halftone"
                 //}
 
                 //If you don't want the pure blocked shadows, you can use the first the top line
-                //lightDot = step(halftoneVal, lightDot / _Threshold);
-                lightDot = lightDot > _ShadeValue ? step(halftoneVal, lightDot / _Threshold) : 0;
+                //lightDot = step(halftoneVal, lightDot / _ShadowThreshold);
+                lightDot = lightDot > _ShadeValue ? step(halftoneVal, lightDot / _ShadowThreshold) : 0;
 
                 //Changes the Shadow Color
                 if(lightDot == 0) {
