@@ -139,16 +139,15 @@ Shader "Unlit/FlatShading"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float3 viewDir = normalize(i.viewDir);
+                
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
                 
+                //Needed variables for light calculation
+                float3 viewDir = normalize(i.viewDir);
                 float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
                 float shadow = SHADOW_ATTENUATION(i);
              
-
-               
-
                 //calculates how shadow is perceived
                 //shadow is added to the dotted light values 
                 float lightDot = dot(i.worldNormal, lightDir) * shadow;
@@ -173,9 +172,9 @@ Shader "Unlit/FlatShading"
                 float rim = smoothstep(_LightSize - 0.01, _LightSize + 0.01, rimLight);
 
 
+                //Specular Lighting
                 float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
                 float NdotH = dot(i.worldNormal, halfVector);
-
                 float specularIntensity = pow(NdotH * lightDot, _Glossiness * _Glossiness);
                 float specularIntensitySmooth = smoothstep(0.005, 0.01, specularIntensity);
                 float4 specular = specularIntensitySmooth * _LightColor0;
